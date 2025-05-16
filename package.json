@@ -9,6 +9,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^5.1.0"
+    "chart.js": "^4.4.9",
+    "express": "^5.1.0",
+    "pixi.js": "^8.9.2",
+    "socket.io": "^4.8.1"
   }
 }
