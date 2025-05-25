@@ -24,8 +24,30 @@ const socket = io();
     player.y = app.screen.height / 2;
     
     container.addChild(player);
-    
-    app.ticker.add(() => {
-        container.x += container.x +1;
+
+    app.stage.eventMode = 'static';
+
+    app.stage.hitArea = app.screen;
+
+    let cursorPos;
+    app.stage.addEventListener('pointermove', (e) =>
+    {
+        cursorPos = e.global
+    });
+    app.ticker.add((time) => {
+        const dx = cursorPos.x - player.x;
+        const dy = cursorPos.y - player.y;
+
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > 1) {
+            const vx = (dx / distance) * Math.min(1, distance);
+            const vy = (dy / distance) * Math.min(1, distance);
+
+            player.x += vx;
+            player.y += vy;
+
+            socket.emit("move", { x: player.x, y: player.y });
+        }
     });
 })();
