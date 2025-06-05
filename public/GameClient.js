@@ -80,7 +80,10 @@ export class GameClient {
         const mouseDirection = new PIXI.Point(0, 0);
 
         this.app.stage.interactive = true;
-        this.app.stage.addEventListener('pointermove', (event) => {
+        this.app.stage.hitArea = new PIXI.Rectangle(0, 0, this.app.screen.width, this.app.screen.height);
+
+        this.app.stage.on('pointermove', (event) => {
+
             const mousePos = event.global;
             const center = new PIXI.Point(this.app.screen.width / 2, this.app.screen.height / 2);
 
@@ -98,10 +101,8 @@ export class GameClient {
         // Game loop (envoi de la direction souris)
         this.app.ticker.add((delta) => {
             if (mouseDirection.x !== 0 || mouseDirection.y !== 0) {
-                this.socket.sendMove({x:1,y:0});
-                //  this.socket.sendMove(mouseDirection);
+                this.socket.sendMove(mouseDirection);
             }
-            this.socket.sendMove({x:1,y:0});
             // Mise à jour du rendu
             this.renderer.update(
                 Array.from(this.players.values()),
