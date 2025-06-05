@@ -1,4 +1,4 @@
-import { JoinGameMessage, MessageCodec, MoveMessage } from "./Message.js";
+import { JoinGameMessage, Message, MessageCodec, MoveMessage } from "./Message.js";
 
 
 
@@ -14,10 +14,15 @@ export class SocketManager {
   }
 
 
-  onMessage(handler){
-    this.socket.on('message',(data)=>{
-        const msg = MessageCodec.decode(data);
-    })
+  onMessage(messageType, handler) {
+    // this.messageHandlers.set(messageType, handler);
+    // this.socket.on('message', (data) => {
+    //   console.log("Received message : ", data);
+    //   const message = MessageCodec.decode(data);
+    //   if (message.constructor.name === messageType) {
+    //     handler(message);
+    //   }
+    // });
   }
 
   sendJoinGame(playerName) {

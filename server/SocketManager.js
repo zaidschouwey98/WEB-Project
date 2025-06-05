@@ -13,7 +13,9 @@ export class SocketManager{
             console.log(`Nouvelle connexion: ${socket.id}`);
 
             socket.on('message', (data) => {
+                
                 const message = MessageCodec.decode(data);
+
                 this.handleMessage(socket, message);
             });
 

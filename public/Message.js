@@ -125,7 +125,7 @@ export class MessageCodec {
       type: message.constructor.name,
       data: message.data
     };
-    return JSON.stringify(messageObj);
+    return messageObj;
   }
 
   /**
@@ -133,8 +133,8 @@ export class MessageCodec {
    * @param {String} string The string to be decoded.
    * @returns {Message} An instance of the corresponding message class.
    */
-  static decode(string) {
-    const parsed = JSON.parse(string);
+  static decode(parsed) {
+    console.log(parsed)
     const messageType = MessageCodec.types[parsed.type];
     
     if (parsed.data === undefined || parsed.data === null) {

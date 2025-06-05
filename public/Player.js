@@ -17,6 +17,10 @@ export class Player {
     this.position.y = Math.max(this.radius, Math.min(world.height - this.radius, this.position.y));
   }
 
+  getCenterPosition(){
+    return this.position;
+  }
+
   getTotalMass() {
     return this.score;
   }

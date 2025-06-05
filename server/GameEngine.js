@@ -23,12 +23,12 @@ export class GameEngine{
     }
 
     gameLoop() {
-        // const TICK_RATE = 30;
-        // setInterval(() => {
-        //     this.playerManager.updatePositions();
-        //     //this.handleCollisions();
-        //     this.emitGameState();
-        // }, 1000 / TICK_RATE);
+        const TICK_RATE = 30;
+        setInterval(() => {
+            this.playerManager.updatePositions(this.world);
+            //this.handleCollisions();
+            this.emitGameState();
+        }, 1000 / TICK_RATE);
     }
 
     emitGameState() {
