@@ -18,19 +18,23 @@ export class GameEngine{
         
     }
 
+    updatePlayerDirection(id,direction){
+        this.playerManager.updateDirection(id,direction);
+    }
+
     gameLoop() {
-        const TICK_RATE = 30;
-        setInterval(() => {
-            this.playerManager.updateDirection();
-            //this.handleCollisions();
-            this.emitGameState();
-        }, 1000 / TICK_RATE);
+        // const TICK_RATE = 30;
+        // setInterval(() => {
+        //     this.playerManager.updatePositions();
+        //     //this.handleCollisions();
+        //     this.emitGameState();
+        // }, 1000 / TICK_RATE);
     }
 
     emitGameState() {
         const gameState = {
-            players: this.players.getAllPlayers(),
-            foods: this.world.foods,
+            players: this.playerManager.getAllPlayers(),
+            foods: this.world.foods
         };
         this.socketManager.broadcastGameState(gameState);
     }

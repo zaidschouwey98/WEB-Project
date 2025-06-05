@@ -1,4 +1,4 @@
-import { MessageCodec } from "../public/Message.js";
+import { GameUpdateMessage, MessageCodec } from "../public/Message.js";
 import { GameEngine } from "./GameEngine.js";
 
 export class SocketManager{
@@ -36,7 +36,7 @@ export class SocketManager{
 
     broadcastGameState(state) {
         this.io.emit('message', MessageCodec.encode(
-            new GameUpdateMessage(state.players, state.foods, state.viruses)
+            new GameUpdateMessage(state.players, state.foods)
         ));
     }
 }

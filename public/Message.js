@@ -78,16 +78,16 @@ export class GameInitMessage extends Message {
 }
 
 export class GameUpdateMessage extends Message {
-  constructor(players, foods, viruses) {
-    super({ players, foods, viruses });
+  constructor(players, foods) {
+    super({ players, foods });
   }
 
   getPlayers() {
-    return this.data.players.map(p => new PlayerData(p.id, p.name, p.cells, p.score));
+    return this.data.players;
   }
 
   getFoods() {
-    return this.data.foods.map(f => new CellData(f.id, f.position, f.radius, f.color));
+    return this.data.foods;
   }
 }
 

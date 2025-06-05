@@ -6,8 +6,16 @@ export class Player {
     this.position = position;
     this.direction = direction;
     this.score = 0;
+    this.speed = 2;
   }
 
+  move(world){
+    this.position.x += this.direction.x * this.speed;
+    this.position.y += this.direction.y * this.speed;
+
+    this.position.x = Math.max(this.radius, Math.min(world.width - this.radius, this.position.x));
+    this.position.y = Math.max(this.radius, Math.min(world.height - this.radius, this.position.y));
+  }
 
   getTotalMass() {
     return this.score;
