@@ -46,11 +46,11 @@ export class JoinGameMessage extends Message {
 
 export class MoveMessage extends Message {
   constructor(direction) {
-    super({ direction });
+    super(direction);
   }
 
   getDirection() {
-    return new Vector2(this.data.direction.x, this.data.direction.y);
+    return new Vector2(this.data.x, this.data.y);
   }
 }
 

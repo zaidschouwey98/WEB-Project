@@ -7,7 +7,7 @@ async function initGame() {
   const app = new PIXI.Application({
     width: window.innerWidth,
     height: window.innerHeight,
-    backgroundColor: 0x1099bb,
+    backgroundColor: 0xFFFFFF,
     antialias: true,
     autoStart: false // On démarre manuellement
   });

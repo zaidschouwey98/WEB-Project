@@ -31,6 +31,7 @@ export class SocketManager {
 
   sendMove(direction) {
     const message = new MoveMessage(direction);
+    console.log(message)
     this.socket.emit('message', MessageCodec.encode(message));
   }
 }

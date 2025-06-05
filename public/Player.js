@@ -8,7 +8,7 @@ export class Player {
     this.color = color;
     this.score = 0;
     this.speed = 2;
-    this.radius = 4;
+    this.radius = 10;
   }
 
   move(world){

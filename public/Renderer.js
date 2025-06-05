@@ -27,8 +27,7 @@ export class Renderer {
 
     centerView(position) {
         this.camera.position.set(position.x, position.y);
-
-        // Calculate zoom based on player size (if available)
+        this.camera.targetZoom = 0.1; 
         this.updateView();
     }
 
@@ -64,7 +63,7 @@ export class Renderer {
         players.forEach(player => {
             // Crée un cercle pour le joueur
             const circle = new PIXI.Graphics();
-            if(player.color == undefined)
+            if (player.color == undefined)
                 return; // a changer
             circle.beginFill(parseInt(player.color.substring(1), 16));
             circle.drawCircle(0, 0, player.radius);
@@ -90,7 +89,11 @@ export class Renderer {
     }
 
     renderFoods(foods) {
-        foods.forEach(food => {
+        foods.forEach((food, id) => {
+            if (!food.position || !food.radius || !food.color) {
+                console.warn('Food data malformed:', food);
+                return;
+            }
             const circle = new PIXI.Graphics();
             circle.beginFill(parseInt(food.color.substring(1), 16));
             circle.drawCircle(0, 0, food.radius);
