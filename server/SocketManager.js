@@ -13,9 +13,7 @@ export class SocketManager{
             console.log(`Nouvelle connexion: ${socket.id}`);
 
             socket.on('message', (data) => {
-                
                 const message = MessageCodec.decode(data);
-
                 this.handleMessage(socket, message);
             });
 
@@ -28,7 +26,7 @@ export class SocketManager{
     handleMessage(socket, message) {
         switch(message.constructor.name) {
             case 'JoinGameMessage':
-                this.gameEngine.addPlayer(socket.id, message.getPlayerName());
+                this.gameEngine.addPlayer(socket.id, message.data);
                 break;
             case 'MoveMessage':
                 this.gameEngine.updatePlayerDirection(socket.id, message.getDirection());
@@ -38,7 +36,7 @@ export class SocketManager{
 
     broadcastGameState(state) {
         this.io.emit('message', MessageCodec.encode(
-            new GameUpdateMessage(state.players, state.foods)
+            new GameUpdateMessage({players:Object.fromEntries(state.players), foods:Object.fromEntries(state.foods)})
         ));
     }
 }

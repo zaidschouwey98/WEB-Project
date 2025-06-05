@@ -8,7 +8,6 @@ export class PlayerManager {
   addPlayer(id, name, position) {
     const player = new Player(id, name,{x:0,y:0}, position);
     this.players.set(id, player);
-    return player;
   }
 
   updateDirection(id, direction) {

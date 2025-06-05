@@ -36,7 +36,7 @@ export class PlayerData {
 // Messages du client vers le serveur
 export class JoinGameMessage extends Message {
   constructor(name) {
-    super({ name });
+    super(name);
   }
 
   getPlayerName() {
@@ -78,8 +78,8 @@ export class GameInitMessage extends Message {
 }
 
 export class GameUpdateMessage extends Message {
-  constructor(players, foods) {
-    super({ players, foods });
+  constructor({players, foods}) {
+    super({players,foods});
   }
 
   getPlayers() {
@@ -134,7 +134,6 @@ export class MessageCodec {
    * @returns {Message} An instance of the corresponding message class.
    */
   static decode(parsed) {
-    console.log(parsed)
     const messageType = MessageCodec.types[parsed.type];
     
     if (parsed.data === undefined || parsed.data === null) {

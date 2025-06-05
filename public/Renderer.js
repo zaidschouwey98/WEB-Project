@@ -61,7 +61,6 @@ export class Renderer {
   }
 
   renderPlayers(players) {
-    console.log(players);
     players.forEach(player => {
       player.cells.forEach(cell => {
         const circle = new PIXI.Graphics();

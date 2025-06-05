@@ -6,10 +6,11 @@ export class GameWorld{
         this.height = height;
         this.maxFood = maxFood;
         this.foods = new Map();
+        this.initializeWorld();
     }
 
     initializeWorld() {
-        for (let i = 0; i < this.spawnFood; i++) {
+        for (let i = 0; i < this.maxFood; i++) {
             this.spawnFood();
         }
     }

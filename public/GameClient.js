@@ -1,3 +1,4 @@
+import { Player } from "./Player.js";
 import { Renderer } from "./Renderer.js";
 
 export class GameClient{
@@ -45,28 +46,33 @@ export class GameClient{
 
     handleGameUpdate(message) {
         // Update players
-        message.data.players.forEach(playerData => {
+        for(let key of Object.keys(message.data.players)){
+            let playerData = message.data.players[key];
             if (this.players.has(playerData.id)) {
                 this.players.get(playerData.id).update(playerData);
             } else {
-                this.players.set(playerData.id, new Player(playerData));
+                this.players.set(playerData.id, new Player(playerData.id,
+                    playerData.name,
+                    playerData.position,
+                    playerData.direction));
             }
-        });
-        
+        }
+   
+
         // Remove disconnected players
-        const currentPlayerIds = message.getPlayers().map(p => p.id);
-        Array.from(this.players.keys()).forEach(id => {
-            if (!currentPlayerIds.includes(id) && id !== this.myPlayerId) {
-                this.players.delete(id);
-            }
-        });
+        // const currentPlayerIds = message.getPlayers().map(p => p.id);
+        // Array.from(this.players.keys()).forEach(id => {
+        //     if (!currentPlayerIds.includes(id) && id !== this.myPlayerId) {
+        //         this.players.delete(id);
+        //     }
+        // });
         
         // Update foods
         this.foods.clear();
-        message.getFoods().forEach(food => {
-        this.foods.set(food.id, food);
-        });
-        
+        for(let key of Object.keys(message.data.foods)){
+            let food = message.data.foods[key]
+            this.foods.set(food.id, food);
+        }
         
         this.centerViewOnPlayer();
     }

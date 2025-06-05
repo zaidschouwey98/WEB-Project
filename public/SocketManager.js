@@ -15,14 +15,13 @@ export class SocketManager {
 
 
   onMessage(messageType, handler) {
-    // this.messageHandlers.set(messageType, handler);
-    // this.socket.on('message', (data) => {
-    //   console.log("Received message : ", data);
-    //   const message = MessageCodec.decode(data);
-    //   if (message.constructor.name === messageType) {
-    //     handler(message);
-    //   }
-    // });
+    this.messageHandlers.set(messageType, handler);
+    this.socket.on('message', (data) => {
+      const message = MessageCodec.decode(data);
+      if (message.constructor.name === messageType) {
+        handler(message);
+      }
+    });
   }
 
   sendJoinGame(playerName) {
