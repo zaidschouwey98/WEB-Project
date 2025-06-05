@@ -13,7 +13,7 @@ export class Vector2 {
     this.x = x;
     this.y = y;
   }
-  set(x, y) {  // <-- Ajoutez cette méthode
+  set(x, y) { 
         this.x = x;
         this.y = y;
     }

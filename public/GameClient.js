@@ -76,7 +76,11 @@ export class GameClient {
             }
         }
         // Update foods
-        this.foods.clear();
+        // Supprime uniquement les foods absentes du serveur
+        const serverFoods = message.data.foods;
+        Array.from(this.foods.keys()).forEach(id => {
+            if (!serverFoods[id]) this.foods.delete(id);
+        });
         const foodsData = message.data.foods;
         for (let foodId in foodsData) {
             if (foodsData.hasOwnProperty(foodId)) {

@@ -48,8 +48,7 @@ export class Renderer {
         this.renderFoods(foods);
         this.renderPlayers(players);
 
-        // Smooth zoom
-        this.camera.zoom += (this.camera.targetZoom - this.camera.zoom) * 0.1;
+  
         this.updateView();
     }
 

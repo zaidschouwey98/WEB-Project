@@ -30,7 +30,7 @@ export class SocketManager{
                 socket.emit('message', MessageCodec.encode(new GameInitMessage(
                     {
                         playerId:player.id,
-                        worldSize:{width:this.gameEngine.world.width,height:this.gameEngine.world.height},
+                        worldSize:{width:100,height:100},
                         players:Object.fromEntries(this.gameEngine.playerManager.getAllPlayers()),
                         foods:Object.fromEntries(this.gameEngine.world.foods)
                     })
