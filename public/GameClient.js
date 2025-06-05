@@ -33,14 +33,28 @@ export class GameClient {
         this.myPlayerId = message.getPlayerId();
         this.worldSize = message.getWorldSize();
 
-        message.getPlayers().forEach(playerData => {
-            this.players.set(playerData.id, new Player(playerData));
-        });
+        for (let key of Object.keys(message.data.players)) {
+            let playerData = message.data.players[key];
+            if (this.players.has(playerData.id)) {
+                this.players.get(playerData.id).update(playerData);
+            } else {
+                this.players.set(playerData.id, new Player(playerData.id,
+                    playerData.name,
+                    playerData.position,
+                    playerData.direction,
+                    playerData.color
+                ));
+            }
+        }
+
 
         // Initialize foods
-        message.getFoods().forEach(food => {
-            this.foods.set(food.id, food);
-        });
+        const foodsData = message.data.foods;
+        for (let foodId in foodsData) {
+            if (foodsData.hasOwnProperty(foodId)) {
+                this.foods.set(foodId, foodsData[foodId]);
+            }
+        }
 
         this.renderer.initialize(this.worldSize);
         this.centerViewOnPlayer();
@@ -73,6 +87,8 @@ export class GameClient {
     centerViewOnPlayer() {
         if (this.myPlayerId && this.players.has(this.myPlayerId)) {
             const myPlayer = this.players.get(this.myPlayerId);
+            console.log("Position joueur:", myPlayer.position.x, myPlayer.position.y); // Debug
+
             this.renderer.centerView(myPlayer.getCenterPosition());
         }
     }
@@ -103,6 +119,7 @@ export class GameClient {
             if (mouseDirection.x !== 0 || mouseDirection.y !== 0) {
                 this.socket.sendMove(mouseDirection);
             }
+            this.centerViewOnPlayer();
             // Mise à jour du rendu
             this.renderer.update(
                 Array.from(this.players.values()),

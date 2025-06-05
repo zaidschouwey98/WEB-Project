@@ -13,6 +13,10 @@ export class Vector2 {
     this.x = x;
     this.y = y;
   }
+  set(x, y) {  // <-- Ajoutez cette méthode
+        this.x = x;
+        this.y = y;
+    }
 }
 
 export class CellData {
@@ -56,7 +60,7 @@ export class MoveMessage extends Message {
 
 // Messages du serveur vers le client
 export class GameInitMessage extends Message {
-  constructor(playerId, worldSize, players, foods) {
+  constructor({playerId, worldSize, players, foods}) {
     super({ playerId, worldSize, players, foods });
   }
 
@@ -69,11 +73,11 @@ export class GameInitMessage extends Message {
   }
 
   getPlayers() {
-    return this.data.players.map(p => new PlayerData(p.id, p.name, p.cells, p.score));
+    return this.data.players;
   }
 
   getFoods() {
-    return this.data.foods.map(f => new CellData(f.id, f.position, f.radius, f.color));
+    return this.data.foods;
   }
 }
 

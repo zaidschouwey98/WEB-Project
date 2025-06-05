@@ -11,7 +11,7 @@ export class GameEngine{
     }
 
     addPlayer(id,name){
-        this.playerManager.addPlayer(id,name,{x:0, y:0});
+        return this.playerManager.addPlayer(id,name,{x:0, y:0});
     }
 
     removePlayer(id){
