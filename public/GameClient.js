@@ -54,7 +54,9 @@ export class GameClient{
                 this.players.set(playerData.id, new Player(playerData.id,
                     playerData.name,
                     playerData.position,
-                    playerData.direction));
+                    playerData.direction,
+                    playerData.color
+                ));
             }
         }
    
@@ -84,10 +86,66 @@ export class GameClient{
     }
     initControls(){
     
-        this.renderer.update(
-            Array.from(this.players.values()),
-            Array.from(this.foods.values()),
-        );
+        const mouseDirection = new PIXI.Point(0, 0);
+    const keyboardDirection = new PIXI.Point(0, 0);
+    const targetDirection = new PIXI.Point(0, 0);
+    
+    // Mouse controls
+    this.app.stage.interactive = true;
+    this.app.stage.on('pointermove', (event) => {
+      const mousePos = event.data.global;
+      const center = new PIXI.Point(this.app.screen.width / 2, this.app.screen.height / 2);
+      mouseDirection.set(mousePos.x - center.x, mousePos.y - center.y);
+      mouseDirection.normalize();
+    });
+    
+    // Keyboard controls
+    const keys = {};
+    window.addEventListener('keydown', (e) => {
+      keys[e.key] = true;
+      updateKeyboardDirection();
+    });
+    
+    window.addEventListener('keyup', (e) => {
+      keys[e.key] = false;
+      updateKeyboardDirection();
+    });
+    
+    function updateKeyboardDirection() {
+      keyboardDirection.set(0, 0);
+      if (keys['ArrowUp'] || keys['w']) keyboardDirection.y -= 1;
+      if (keys['ArrowDown'] || keys['s']) keyboardDirection.y += 1;
+      if (keys['ArrowLeft'] || keys['a']) keyboardDirection.x -= 1;
+      if (keys['ArrowRight'] || keys['d']) keyboardDirection.x += 1;
+      keyboardDirection.normalize();
+    }
+    
+    // Game loop
+    this.app.ticker.add((delta) => {
+      // Combine mouse and keyboard input
+      targetDirection.set(
+        mouseDirection.x + keyboardDirection.x,
+        mouseDirection.y + keyboardDirection.y
+      );
+      
+      if (targetDirection.x !== 0 || targetDirection.y !== 0) {
+        targetDirection.normalize();
+        this.socket.sendMove(targetDirection);
+      }
+      
+      // Update renderer
+      this.renderer.update(
+        Array.from(this.players.values()),
+        Array.from(this.foods.values()),
+      );
+    });
+    
+    // Split cell on space
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        this.socket.sendSplit();
+      }
+    });
        
     }
 }

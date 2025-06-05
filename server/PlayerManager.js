@@ -6,7 +6,7 @@ export class PlayerManager {
   }
 
   addPlayer(id, name, position) {
-    const player = new Player(id, name,{x:0,y:0}, position);
+    const player = new Player(id, name,{x:0,y:0}, position, '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0'));
     this.players.set(id, player);
   }
 
