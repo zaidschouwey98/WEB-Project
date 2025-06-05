@@ -1,6 +1,7 @@
 import express from "express";
 import { Server } from "socket.io";
 import { createServer } from 'node:http';
+import { SocketManager } from "./SocketManager.js";
 
 const app = express();
 const server = createServer(app);
@@ -10,11 +11,7 @@ const port = 3000
 
 app.use(express.static("public"));
 
-console.log("starting server");
-
-io.on('connection', (socket) => {
-  console.log('a user connected');
-});
+new SocketManager(io);
 
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
