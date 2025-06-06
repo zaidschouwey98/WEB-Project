@@ -41,7 +41,7 @@ export class GameClient {
      * @param {NewFoodMessage} message 
      */
     handleNewFood(message){
-        let food = message.getFood();
+        let food = message.data;
         this.foods.set(food.id,food);
     }
     

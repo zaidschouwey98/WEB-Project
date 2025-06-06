@@ -1,14 +1,16 @@
-var nextFoodId = 1;
-
 export class Food {
-  constructor(position, radius) {
-    this.id = `food_${nextFoodId++}`;
+
+  static nextFoodId = 1;
+  static foodRadius = 5;
+
+  constructor(position) {
+    this.id = `food_${Food.nextFoodId++}`;
     this.position = position;
-    this.radius = radius;
-    this.color = this.getRandomColor();
+    this.color = Food.getRandomColor();
+    this.radius = this.foodRadius;
   }
 
-  getRandomColor() {
+  static getRandomColor() {
     const colors = [
       '#FF5252', '#FF4081', '#E040FB', '#7C4DFF',
       '#536DFE', '#448AFF', '#40C4FF', '#18FFFF',

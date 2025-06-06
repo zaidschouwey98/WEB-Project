@@ -1,6 +1,8 @@
 import { Vector2 } from "./Message.js";
 
 export class Renderer {
+
+
     constructor(app,player) {
         this.player = player;
         this.app = app;
@@ -10,15 +12,13 @@ export class Renderer {
             targetZoom: 1
         };
 
+        this.particleTexture = this.createFoodTexture('#FFFFFF');
+
         this.worldContainer = new PIXI.Container();
         this.app.stage.addChild(this.worldContainer);
 
         this.playerGraphics = new PIXI.Container();
-        this.foodGraphics = new PIXI.ParticleContainer(2000, {
-            position: true,
-            scale: true,
-            tint: true
-        });
+        this.foodGraphics = new PIXI.Container();
 
         this.worldContainer.addChild(this.foodGraphics);
         this.worldContainer.addChild(this.playerGraphics);
@@ -50,18 +50,18 @@ export class Renderer {
         );
     }
 
+    createFoodTexture(color){
+        const gfx = new PIXI.Graphics();
+        gfx.beginFill(color);
+        gfx.drawCircle(0, 0, 5);
+        gfx.endFill();
+        return this.app.renderer.generateTexture(gfx);
+    }
+
     update(players, foods) {
         this.renderFoods(foods);
         this.renderPlayers(players);
         this.updateView();
-    }
-
-    createFoodTexture(radius, color) {
-        const gfx = new PIXI.Graphics();
-        gfx.beginFill(color);
-        gfx.drawCircle(0, 0, radius);
-        gfx.endFill();
-        return this.app.renderer.generateTexture(gfx);
     }
 
     renderPlayers(players) {
@@ -113,39 +113,6 @@ export class Renderer {
             }
         }
     }
-
-    renderFoods(foods) {
-        const remainingIds = new Set();
-
-        foods.forEach((food, id) => {
-            remainingIds.add(id);
-
-            let sprite = this.foodMap.get(id);
-            const color = parseInt(food.color.substring(1), 16);
-            const radius = food.radius;
-
-            if (!sprite) {
-                const texture = this.createFoodTexture(radius, color);
-                sprite = new PIXI.Sprite(texture);
-                sprite.anchor.set(0.5); // Center the circle
-                this.foodGraphics.addParticle(sprite);
-                this.foodMap.set(id, sprite);
-            }
-
-            sprite.position.set(food.position.x, food.position.y);
-            sprite.scale.set(1); // Optional: could use scale for variation
-            sprite.tint = color;
-        });
-
-        // Cleanup removed food
-        for (const [id, sprite] of this.foodMap.entries()) {
-            if (!remainingIds.has(id)) {
-                this.foodGraphics.removeParticle(sprite);
-                sprite.destroy();
-                this.foodMap.delete(id);
-            }
-        }
-    }
     /*
     renderFoods(foods) {
         const remainingIds = new Set();
@@ -161,7 +128,7 @@ export class Renderer {
             } else {
                 circle.clear();
             }
-
+            
             circle.beginFill(parseInt(food.color.substring(1), 16));
             circle.drawCircle(0, 0, food.radius);
             circle.endFill();
@@ -175,5 +142,34 @@ export class Renderer {
                 this.foodMap.delete(id);
             }
         }
-    }*/
+    }
+    */
+    renderFoods(foods) {
+        const remainingIds = new Set();
+
+        foods.forEach((food, id) => {
+            remainingIds.add(id);
+
+            let foodSprite = this.foodMap.get(id);
+            if (!foodSprite) {
+                // Only create the sprite once
+                foodSprite = new PIXI.Sprite(this.particleTexture);
+                this.foodGraphics.addChild(foodSprite);
+                this.foodMap.set(id, foodSprite);
+            }
+            // Update sprite position and tint
+            foodSprite.position.set(food.position.x, food.position.y);
+            foodSprite.tint = parseInt(food.color.substring(1), 16);
+        });
+
+        // Remove old sprites
+        for (const [id, sprite] of this.foodMap.entries()) {
+            if (!remainingIds.has(id)) {
+                this.foodGraphics.removeChild(sprite);
+                sprite.destroy();
+                this.foodMap.delete(id);
+            }
+        }
+        }
+
 }

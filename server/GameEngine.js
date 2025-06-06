@@ -3,7 +3,7 @@ import { PlayerManager } from "./PlayerManager.js";
 
 export class GameEngine{
     constructor(socketManager){
-        this.world = new GameWorld(5000, 5000,10000);
+        this.world = new GameWorld(5000, 5000,5000);
         this.playerManager = new PlayerManager();
         this.socketManager = socketManager;
         this.gameLoop();

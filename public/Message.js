@@ -1,4 +1,3 @@
-
 /**
  * Parent class for all messages used to communicate between server and client.
  */
@@ -22,11 +21,6 @@ export class Vector2 {
 export class NewFoodMessage extends Message{
   constructor(food){
     super(food);
-  }
-
-
-  getFood(){
-    return new Food(this.data.position,this.data.radius);
   }
 }
 

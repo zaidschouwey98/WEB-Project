@@ -41,7 +41,7 @@ export class GameWorld {
     }
 
     spawnFood() {
-        let newFood = new Food(this.getRandomPosition(), 5);
+        let newFood = new Food(this.getRandomPosition());
         this.foods.set(newFood.id, newFood);
         return newFood;
     }
