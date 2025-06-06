@@ -14,7 +14,7 @@ export class GameEngine{
     }
 
     removePlayer(id){
-        
+        this.playerManager.removePlayer(id);
     }
 
     updatePlayerDirection(id,direction){

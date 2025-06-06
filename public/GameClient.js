@@ -65,6 +65,7 @@ export class GameClient {
         if (!this.gameStarted)
             return;
         // Update players
+        this.players.clear();
         for (let key of Object.keys(message.data.players)) {
             let playerData = message.data.players[key];
             if (this.players.has(playerData.id)) {
@@ -78,10 +79,7 @@ export class GameClient {
                 ));
             }
         }
-        const serverFoods = message.data.foods;
-        Array.from(this.foods.keys()).forEach(id => {
-            if (!serverFoods[id]) this.foods.delete(id);
-        });
+        this.foods.clear();
         const foodsData = message.data.foods;
         for (let foodId in foodsData) {
             if (foodsData.hasOwnProperty(foodId)) {
@@ -92,8 +90,6 @@ export class GameClient {
     centerViewOnPlayer() {
         if (this.myPlayerId && this.players.has(this.myPlayerId)) {
             const myPlayer = this.players.get(this.myPlayerId);
-            console.log("Position joueur:", myPlayer.position.x, myPlayer.position.y); // Debug
-
             this.renderer.centerView(myPlayer.getCenterPosition());
         }
     }

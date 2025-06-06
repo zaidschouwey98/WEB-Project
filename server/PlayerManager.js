@@ -11,6 +11,10 @@ export class PlayerManager {
     return player;
   }
 
+  removePlayer(id){
+    this.players.delete(id);
+  }
+
   updateDirection(id, direction) {
     const player = this.players.get(id);
     if (player) {
