@@ -9,7 +9,7 @@ export class GameClient {
         this.initNetwork();
         this.app = app;
         this.renderer = new Renderer(this.app);
-
+        this.gameStarted = false;
         this.initControls();
     }
 
@@ -23,7 +23,6 @@ export class GameClient {
         this.socket.onMessage('GameInitMessage', (message) => {
             this.handleGameInit(message);
         });
-
         this.socket.onMessage('GameUpdateMessage', (message) => {
             this.handleGameUpdate(message);
         });
@@ -58,9 +57,13 @@ export class GameClient {
 
         this.renderer.initialize(this.worldSize);
         this.centerViewOnPlayer();
+        this.gameStarted = true;
     }
 
+
     handleGameUpdate(message) {
+        if (!this.gameStarted)
+            return;
         // Update players
         for (let key of Object.keys(message.data.players)) {
             let playerData = message.data.players[key];
@@ -75,8 +78,6 @@ export class GameClient {
                 ));
             }
         }
-        // Update foods
-        // Supprime uniquement les foods absentes du serveur
         const serverFoods = message.data.foods;
         Array.from(this.foods.keys()).forEach(id => {
             if (!serverFoods[id]) this.foods.delete(id);
@@ -124,7 +125,6 @@ export class GameClient {
                 this.socket.sendMove(mouseDirection);
             }
             this.centerViewOnPlayer();
-            // Mise à jour du rendu
             this.renderer.update(
                 Array.from(this.players.values()),
                 Array.from(this.foods.values())

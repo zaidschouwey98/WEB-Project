@@ -60,10 +60,7 @@ export class Renderer {
 
     renderPlayers(players) {
         players.forEach(player => {
-            // Crée un cercle pour le joueur
             const circle = new PIXI.Graphics();
-            if (player.color == undefined)
-                return; // a changer
             circle.beginFill(parseInt(player.color.substring(1), 16));
             circle.drawCircle(0, 0, player.radius);
             circle.endFill();
@@ -100,9 +97,5 @@ export class Renderer {
             circle.position.set(food.position.x, food.position.y);
             this.foodGraphics.addChild(circle);
         });
-    }
-
-    onResize() {
-        this.updateView();
     }
 }
