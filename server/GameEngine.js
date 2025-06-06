@@ -33,14 +33,22 @@ export class GameEngine{
     handleCollisions(){
         this.playerManager.players.forEach((player)=>{
             let {other, distance} = this.playerManager.getClosestPlayer(player.id);
-            if(other == undefined)
-                return;
-            if(player.radius > other.radius + other.radius / 10)
+           
+            if(other != undefined && player.radius > other.radius + other.radius / 10)
                 if(distance < player.radius / 4){
                     // Eat
                     player.raiseScore(other.score);
                     this.playerManager.removePlayer(other.id);
                 }
+
+            let {food,foodDistance} = this.world.getClosestFood(player);
+            if(foodDistance < player.radius / 4)
+            {
+                // eat
+                console.log("eat ?")
+                player.raiseScore(1);
+                this.world.removeFood(food.id)
+            }
         })
     }
 
