@@ -42,10 +42,9 @@ export class GameEngine{
                 }
 
             let {food,foodDistance} = this.world.getClosestFood(player);
-            if(foodDistance < player.radius / 4)
+            if(foodDistance < player.radius - 2)
             {
                 // eat
-                console.log("eat ?")
                 player.raiseScore(1);
                 this.world.removeFood(food.id)
             }
