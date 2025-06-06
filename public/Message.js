@@ -19,21 +19,17 @@ export class Vector2 {
     }
 }
 
-export class CellData {
-  constructor(id, position, radius, color) {
-    this.id = id;
-    this.position = position;
-    this.radius = radius;
-    this.color = color;
+export class NewFoodMessage extends Message{
+  constructor(data){
+    super(data);
   }
-}
 
-export class PlayerData {
-  constructor(id, name, cells, score) {
-    this.id = id;
-    this.name = name;
-    this.cells = cells;
-    this.score = score;
+  getIndex(){
+    return this.data.index;
+  }
+
+  getFood(){
+    return new Food(this.data.food.position,this.data.food.radius);
   }
 }
 

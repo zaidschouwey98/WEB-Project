@@ -26,6 +26,14 @@ export class GameClient {
         this.socket.onMessage('GameUpdateMessage', (message) => {
             this.handleGameUpdate(message);
         });
+
+        this.socket.onMessage('NewFoodMessage',(message)=>{
+            this.handleNewFood(message);
+        })
+    }
+
+    handleNewFood(message){
+    
     }
 
     handleGameInit(message) {
@@ -75,7 +83,10 @@ export class GameClient {
                     playerData.name,
                     playerData.position,
                     playerData.direction,
-                    playerData.color
+                    playerData.color,
+                    playerData.score,
+                    playerData.radius,
+                    playerData.speed
                 ));
             }
         }
