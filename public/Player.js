@@ -6,7 +6,7 @@ export class Player {
     this.position = position;
     this.direction = direction;
     this.color = color;
-    this.score = 0;
+    this.score = 10;
     this.speed = 2;
     this.radius = 10;
   }
@@ -17,6 +17,11 @@ export class Player {
 
     this.position.x = Math.max(this.radius, Math.min(world.width - this.radius, this.position.x));
     this.position.y = Math.max(this.radius, Math.min(world.height - this.radius, this.position.y));
+  }
+
+  raiseScore(score){
+    this.score += score;
+    this.radius += score;
   }
 
   update(playerData){

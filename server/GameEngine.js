@@ -3,7 +3,7 @@ import { PlayerManager } from "./PlayerManager.js";
 
 export class GameEngine{
     constructor(socketManager){
-        this.world = new GameWorld(5000, 5000,100);
+        this.world = new GameWorld(5000, 5000,1000);
         this.playerManager = new PlayerManager();
         this.socketManager = socketManager;
         this.gameLoop();
@@ -25,10 +25,26 @@ export class GameEngine{
         const TICK_RATE = 30;
         setInterval(() => {
             this.playerManager.updatePositions(this.world);
-            //this.handleCollisions();
+            this.handleCollisions();
             this.emitGameState();
         }, 1000 / TICK_RATE);
     }
+
+    handleCollisions(){
+        this.playerManager.players.forEach((player)=>{
+            let {other, distance} = this.playerManager.getClosestPlayer(player.id);
+            if(other == undefined)
+                return;
+            if(player.radius > other.radius + other.radius / 10)
+                if(distance < player.radius / 4){
+                    // Eat
+                    player.raiseScore(other.score);
+                    this.playerManager.removePlayer(other.id);
+                }
+        })
+    }
+
+
 
     emitGameState() {
         const gameState = {

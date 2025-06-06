@@ -22,6 +22,28 @@ export class PlayerManager {
     }
   }
 
+  getClosestPlayer(playerId){
+    const player = this.players.get(playerId);
+    let distance = Number.MAX_SAFE_INTEGER;
+    let target;
+    this.players.forEach((other)=>{
+      if(other.id == playerId)
+        return;
+      let distanceX = player.position.x - other.position.x;
+      let distanceY = player.position.y - other.position.y;
+      let tmpdistance = Math.sqrt(Math.pow(distanceX,2) + Math.pow(distanceY,2));
+      if(tmpdistance < distance){
+        distance = tmpdistance;
+        target = other;
+      }
+        
+    })
+    return {
+      other: target,
+      distance: distance
+    };
+  }
+
   updatePositions(world) {
     this.players.forEach(player => {
       player.move(world);

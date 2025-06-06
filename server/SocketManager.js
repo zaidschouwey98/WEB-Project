@@ -26,7 +26,6 @@ export class SocketManager{
         switch(message.constructor.name) {
             case 'JoinGameMessage':
                 let player = this.gameEngine.addPlayer(socket.id, message.data);
-                console.log(new GameInitMessage(player.id,{width:this.gameEngine.world.width,height:this.gameEngine.world.height} ,this.gameEngine.playerManager.getAllPlayers(), this.gameEngine.world.foods))
                 socket.emit('message', MessageCodec.encode(new GameInitMessage(
                     {
                         playerId:player.id,
