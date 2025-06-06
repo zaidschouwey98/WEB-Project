@@ -1,7 +1,8 @@
 import { Vector2 } from "./Message.js";
 
 export class Renderer {
-    constructor(app) {
+    constructor(app,player) {
+        this.player = player;
         this.app = app;
         this.camera = {
             position: new Vector2(0, 0),

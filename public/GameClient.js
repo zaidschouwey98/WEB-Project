@@ -8,7 +8,7 @@ export class GameClient {
         this.foods = new Map();
         this.initNetwork();
         this.app = app;
-        this.renderer = new Renderer(this.app);
+        this.renderer = new Renderer(this.app,this.myPlayer,this);
         this.gameStarted = false;
         this.initControls();
     }
@@ -50,7 +50,6 @@ export class GameClient {
     }
 
     handleGameInit(message) {
-        this.myPlayerId = message.getPlayerId();
         this.worldSize = message.getWorldSize();
 
         for (let key of Object.keys(message.data.players)) {
@@ -67,7 +66,7 @@ export class GameClient {
             }
         }
 
-
+        this.myPlayer = this.players.get(message.getPlayerId());
         // Initialize foods
         const foodsData = message.data.foods;
         for (let foodId in foodsData) {
@@ -103,12 +102,11 @@ export class GameClient {
                 ));
             }
         }
+        this.myPlayer = this.players.get(this.myPlayer.id);
     }
     centerViewOnPlayer() {
-        if (this.myPlayerId && this.players.has(this.myPlayerId)) {
-            const myPlayer = this.players.get(this.myPlayerId);
-            this.renderer.centerView(myPlayer.getCenterPosition());
-        }
+        if(this.myPlayer != undefined)
+            this.renderer.centerView(this.myPlayer.getCenterPosition());
     }
     initControls() {
         const mouseDirection = new PIXI.Point(0, 0);
@@ -134,10 +132,7 @@ export class GameClient {
                 this.socket.sendMove(mouseDirection);
             }
             this.centerViewOnPlayer();
-            this.renderer.update(
-                Array.from(this.players.values()),
-                Array.from(this.foods.values())
-            );
+            this.renderer.update(this.players,this.foods);
         });
     }
 }
