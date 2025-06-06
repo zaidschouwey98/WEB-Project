@@ -20,16 +20,19 @@ export class Vector2 {
 }
 
 export class NewFoodMessage extends Message{
-  constructor(data){
-    super(data);
+  constructor(food){
+    super(food);
   }
 
-  getIndex(){
-    return this.data.index;
-  }
 
   getFood(){
-    return new Food(this.data.food.position,this.data.food.radius);
+    return new Food(this.data.position,this.data.radius);
+  }
+}
+
+export class DeleteFoodMessage extends Message{
+  constructor(data){
+    super(data);
   }
 }
 
@@ -78,16 +81,11 @@ export class GameInitMessage extends Message {
 }
 
 export class GameUpdateMessage extends Message {
-  constructor({players, foods}) {
-    super({players,foods});
+  constructor({players}) {
+    super({players});
   }
-
   getPlayers() {
     return this.data.players;
-  }
-
-  getFoods() {
-    return this.data.foods;
   }
 }
 
@@ -114,7 +112,9 @@ export class MessageCodec {
     GameInitMessage,
     GameUpdateMessage,
     LeaderboardUpdateMessage,
-    PlayerDiedMessage
+    PlayerDiedMessage,
+    DeleteFoodMessage,
+    NewFoodMessage
   };
 
   /**

@@ -3,7 +3,7 @@ import { PlayerManager } from "./PlayerManager.js";
 
 export class GameEngine{
     constructor(socketManager){
-        this.world = new GameWorld(5000, 5000,1000);
+        this.world = new GameWorld(5000, 5000,10000);
         this.playerManager = new PlayerManager();
         this.socketManager = socketManager;
         this.gameLoop();
@@ -46,7 +46,10 @@ export class GameEngine{
             {
                 // eat
                 player.raiseScore(1);
-                this.world.removeFood(food.id)
+                this.world.removeFood(food.id);
+                let newFood = this.world.spawnFood();
+                this.socketManager.addFood(newFood)
+                this.socketManager.removeFood(food.id);
             }
         })
     }

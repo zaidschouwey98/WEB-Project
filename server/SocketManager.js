@@ -1,4 +1,4 @@
-import { GameInitMessage, GameUpdateMessage, MessageCodec } from "../public/Message.js";
+import { DeleteFoodMessage, GameInitMessage, GameUpdateMessage, MessageCodec, NewFoodMessage } from "../public/Message.js";
 import { GameEngine } from "./GameEngine.js";
 
 export class SocketManager{
@@ -43,7 +43,19 @@ export class SocketManager{
 
     broadcastGameState(state) {
         this.io.emit('message', MessageCodec.encode(
-            new GameUpdateMessage({players:Object.fromEntries(state.players), foods:Object.fromEntries(state.foods)})
+            new GameUpdateMessage({players:Object.fromEntries(state.players)})
+        ));
+    }
+    
+    addFood(food){
+        this.io.emit('message', MessageCodec.encode(
+            new NewFoodMessage(food)
+        ));
+    }
+
+    removeFood(id){
+        this.io.emit('message',MessageCodec.encode(
+            new DeleteFoodMessage(id)
         ));
     }
 }

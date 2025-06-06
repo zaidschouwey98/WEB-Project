@@ -30,10 +30,23 @@ export class GameClient {
         this.socket.onMessage('NewFoodMessage',(message)=>{
             this.handleNewFood(message);
         })
+
+        this.socket.onMessage('DeleteFoodMessage',(message)=>{
+            this.handleRemoveFood(message);
+        })
     }
 
+    /**
+     * 
+     * @param {NewFoodMessage} message 
+     */
     handleNewFood(message){
+        let food = message.getFood();
+        this.foods.set(food.id,food);
+    }
     
+    handleRemoveFood(message){
+        this.foods.delete(message.data);
     }
 
     handleGameInit(message) {
@@ -88,13 +101,6 @@ export class GameClient {
                     playerData.radius,
                     playerData.speed
                 ));
-            }
-        }
-        this.foods.clear();
-        const foodsData = message.data.foods;
-        for (let foodId in foodsData) {
-            if (foodsData.hasOwnProperty(foodId)) {
-                this.foods.set(foodId, foodsData[foodId]);
             }
         }
     }
