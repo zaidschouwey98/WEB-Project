@@ -19,9 +19,13 @@ export class Player {
     this.position.y = Math.max(this.radius, Math.min(world.height - this.radius, this.position.y));
   }
 
-  raiseScore(score){
-    this.score += score;
-    this.radius += score;
+  eat(otherMass){
+    this.radius = Math.abs(Math.sqrt((this.getMass() + otherMass) / Math.PI));
+  }
+
+
+  getMass(){
+    return Math.pow(this.radius,2) * Math.PI;
   }
 
   update(playerData){

@@ -37,7 +37,7 @@ export class GameEngine{
             if(other != undefined && player.radius > other.radius + other.radius / 10)
                 if(distance < player.radius / 4){
                     // Eat
-                    player.raiseScore(other.score);
+                    player.eat(other.getMass());
                     this.playerManager.removePlayer(other.id);
                 }
 
@@ -45,7 +45,7 @@ export class GameEngine{
             if(foodDistance < player.radius - 2)
             {
                 // eat
-                player.raiseScore(1);
+                player.eat(75);
                 this.world.removeFood(food.id);
                 let newFood = this.world.spawnFood();
                 this.socketManager.addFood(newFood)

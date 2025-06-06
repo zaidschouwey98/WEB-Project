@@ -14,7 +14,11 @@ export class Renderer {
         this.app.stage.addChild(this.worldContainer);
 
         this.playerGraphics = new PIXI.Container();
-        this.foodGraphics = new PIXI.Container();
+        this.foodGraphics = new PIXI.ParticleContainer(2000, {
+            position: true,
+            scale: true,
+            tint: true
+        });
 
         this.worldContainer.addChild(this.foodGraphics);
         this.worldContainer.addChild(this.playerGraphics);
@@ -50,6 +54,14 @@ export class Renderer {
         this.renderFoods(foods);
         this.renderPlayers(players);
         this.updateView();
+    }
+
+    createFoodTexture(radius, color) {
+        const gfx = new PIXI.Graphics();
+        gfx.beginFill(color);
+        gfx.drawCircle(0, 0, radius);
+        gfx.endFill();
+        return this.app.renderer.generateTexture(gfx);
     }
 
     renderPlayers(players) {
@@ -108,6 +120,39 @@ export class Renderer {
         foods.forEach((food, id) => {
             remainingIds.add(id);
 
+            let sprite = this.foodMap.get(id);
+            const color = parseInt(food.color.substring(1), 16);
+            const radius = food.radius;
+
+            if (!sprite) {
+                const texture = this.createFoodTexture(radius, color);
+                sprite = new PIXI.Sprite(texture);
+                sprite.anchor.set(0.5); // Center the circle
+                this.foodGraphics.addParticle(sprite);
+                this.foodMap.set(id, sprite);
+            }
+
+            sprite.position.set(food.position.x, food.position.y);
+            sprite.scale.set(1); // Optional: could use scale for variation
+            sprite.tint = color;
+        });
+
+        // Cleanup removed food
+        for (const [id, sprite] of this.foodMap.entries()) {
+            if (!remainingIds.has(id)) {
+                this.foodGraphics.removeParticle(sprite);
+                sprite.destroy();
+                this.foodMap.delete(id);
+            }
+        }
+    }
+    /*
+    renderFoods(foods) {
+        const remainingIds = new Set();
+
+        foods.forEach((food, id) => {
+            remainingIds.add(id);
+
             let circle = this.foodMap.get(id);
             if (!circle) {
                 circle = new PIXI.Graphics();
@@ -130,5 +175,5 @@ export class Renderer {
                 this.foodMap.delete(id);
             }
         }
-    }
+    }*/
 }
