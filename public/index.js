@@ -10,18 +10,19 @@ async function initGame() {
     backgroundColor: 0x000000,
     antialias: true,
     autoStart: false,
-    resizeTo:window
+    resizeTo:window,
+    resolution: window.devicePixelRatio || 1,
+    autoDensity: true
   });
 
-  // Attendre que le renderer soit prêt
   await app.init();
 
   document.body.appendChild(app.view);
-  resizeApp(app); // ← Resize initial
+  resizeApp(app);
   window.addEventListener('resize', () => resizeApp(app));
   let sm = new SocketManager();
   const gameClient = new GameClient(sm,app);
-  app.ticker.start(); // Démarrer la boucle de rendu
+  app.ticker.start(); // Game loop
 }
 
 function resizeApp(app) {
@@ -32,9 +33,6 @@ function resizeApp(app) {
   app.renderer.resolution = resolution;
   app.renderer.resize(width, height);
 
-  // Corrige le style CSS (si jamais)
-  app.view.style.width = `${width}px`;
-  app.view.style.height = `${height}px`;
 }
 
 document.addEventListener('DOMContentLoaded', initGame);

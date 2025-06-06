@@ -5,7 +5,7 @@ export class Renderer {
         this.app = app;
         this.camera = {
             position: new Vector2(0, 0),
-            zoom: 1,
+            zoom: 2,
             targetZoom: 1
         };
         this.worldContainer = new PIXI.Container();
@@ -67,13 +67,13 @@ export class Renderer {
             circle.position.set(player.position.x, player.position.y);
             this.playerGraphics.addChild(circle);
 
-            // Ajoute le nom du joueur
             const nameText = new PIXI.Text(player.name, {
                 fill: '#ffffff',
-                fontSize: Math.min(20, player.radius / 2),
+                fontSize: Math.min(20, player.radius),
                 align: 'center',
                 stroke: '#000000',
-                strokeThickness: 2
+                strokeThickness: 1,
+                resolution: 1
             });
             nameText.anchor.set(0.5);
             nameText.position.set(

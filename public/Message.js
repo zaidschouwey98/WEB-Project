@@ -7,7 +7,7 @@ export class Message {
     this.data = data;
   }
 }
-// Classes de données de base
+
 export class Vector2 {
   constructor(x, y) {
     this.x = x;

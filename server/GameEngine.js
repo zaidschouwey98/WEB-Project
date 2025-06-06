@@ -1,4 +1,3 @@
-import { Player } from "../public/Player.js";
 import { GameWorld } from "./GameWorld.js";
 import { PlayerManager } from "./PlayerManager.js";
 

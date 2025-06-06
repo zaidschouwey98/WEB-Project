@@ -108,18 +108,14 @@ export class GameClient {
             const mousePos = event.global;
             const center = new PIXI.Point(this.app.screen.width / 2, this.app.screen.height / 2);
 
-            // Calcule la direction souris (vecteur normalisé)
             mouseDirection.set(mousePos.x - center.x, mousePos.y - center.y);
-
-            // Normalisation manuelle (car PIXI.Point n'a pas .normalize())
             const length = Math.sqrt(mouseDirection.x ** 2 + mouseDirection.y ** 2);
             if (length > 0) {
                 mouseDirection.x /= length;
                 mouseDirection.y /= length;
             }
         });
-
-        // Game loop (envoi de la direction souris)
+        // Game loop
         this.app.ticker.add((delta) => {
             if (mouseDirection.x !== 0 || mouseDirection.y !== 0) {
                 this.socket.sendMove(mouseDirection);
