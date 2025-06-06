@@ -18,6 +18,12 @@ export class Vector2 {
     }
 }
 
+export class QuitPlayerMessage extends Message {
+  constructor(id) {
+    super(id);
+  }
+}
+
 export class NewFoodMessage extends Message{
   constructor(food){
     super(food);
@@ -25,8 +31,8 @@ export class NewFoodMessage extends Message{
 }
 
 export class DeleteFoodMessage extends Message{
-  constructor(data){
-    super(data);
+  constructor(id){
+    super(id);
   }
 }
 
@@ -108,7 +114,8 @@ export class MessageCodec {
     LeaderboardUpdateMessage,
     PlayerDiedMessage,
     DeleteFoodMessage,
-    NewFoodMessage
+    NewFoodMessage,
+    QuitPlayerMessage
   };
 
   /**

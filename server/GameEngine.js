@@ -3,7 +3,7 @@ import { PlayerManager } from "./PlayerManager.js";
 
 export class GameEngine{
     constructor(socketManager){
-        this.world = new GameWorld(5000, 5000,5000);
+        this.world = new GameWorld(5000, 5000,10000);
         this.playerManager = new PlayerManager();
         this.socketManager = socketManager;
         this.gameLoop();
@@ -35,10 +35,11 @@ export class GameEngine{
             let {other, distance} = this.playerManager.getClosestPlayer(player.id);
            
             if(other != undefined && player.radius > other.radius + other.radius / 10)
-                if(distance < player.radius / 4){
+                if(distance < player.radius / 2){
                     // Eat
                     player.eat(other.getMass());
                     this.playerManager.removePlayer(other.id);
+                    this.socketManager.broadcastDiedPlayer(other.id);
                 }
 
             let {food,foodDistance} = this.world.getClosestFood(player);

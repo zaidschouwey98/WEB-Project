@@ -8,8 +8,7 @@ export class Renderer {
         this.app = app;
         this.camera = {
             position: new Vector2(0, 0),
-            zoom: 2,
-            targetZoom: 1
+            zoom: 1,
         };
 
         this.particleTexture = this.createFoodTexture('#FFFFFF');
@@ -34,7 +33,7 @@ export class Renderer {
 
     centerView(position) {
         this.camera.position.set(position.x, position.y);
-        this.camera.targetZoom = 0.1;
+        this.camera.zoom = 2 // Adjust zoom based on player radius
         this.updateView();
     }
 
@@ -58,118 +57,83 @@ export class Renderer {
         return this.app.renderer.generateTexture(gfx);
     }
 
-    update(players, foods) {
-        this.renderFoods(foods);
-        this.renderPlayers(players);
+    update(players) {
+        this.updatePlayers(players);
         this.updateView();
     }
 
-    renderPlayers(players) {
-        const remainingIds = new Set();
+    addFood(food) {
+        const foodSprite = new PIXI.Sprite(this.particleTexture);
+        foodSprite.anchor.set(0.5);
+        foodSprite.tint = food.color;
+        this.foodGraphics.addChild(foodSprite);
+        this.foodMap.set(food.id, foodSprite);
+        foodSprite.position.set(food.position.x, food.position.y);
+    }
 
+    addPlayer(player) {
+        const circle = new PIXI.Graphics();
+        const nameText = new PIXI.Text(player.name, {
+            fill: '#ffffff',
+            fontSize: Math.min(20, player.radius),
+            align: 'center',
+            stroke: '#000000',
+            strokeThickness: 1,
+            resolution: 1
+        });
+        nameText.anchor.set(0.5)
+        this.playerGraphics.addChild(circle);
+        this.playerGraphics.addChild(nameText);
+        this.playerMap.set(player.id, { circle, nameText });
+        circle.beginFill(player.color);
+        circle.drawCircle(0, 0, player.radius);
+        circle.endFill();
+        circle.position.set(player.position.x, player.position.y);
+        nameText.position.set(
+            player.position.x,
+            player.position.y + player.radius + 10
+        );
+        nameText.style.fontSize = Math.min(20, player.radius);
+    }
+
+    deletePlayer(playerId) {
+        const entry = this.playerMap.get(playerId);
+        if (entry) {
+            this.playerGraphics.removeChild(entry.circle);
+            this.playerGraphics.removeChild(entry.nameText);
+            entry.circle.destroy(); 
+            entry.nameText.destroy();
+            this.playerMap.delete(playerId);
+        }
+    }
+
+    deleteFood(foodId) {
+        const sprite = this.foodMap.get(foodId);
+        if (sprite) {
+            this.foodGraphics.removeChild(sprite);
+            sprite.destroy();
+            this.foodMap.delete(foodId);
+        }
+    }
+
+    updatePlayers(players) {
         players.forEach(player => {
-            remainingIds.add(player.id);
-
-            let entry = this.playerMap.get(player.id);
+            const entry = this.playerMap.get(player.id);
             if (!entry) {
-                const circle = new PIXI.Graphics();
-                const nameText = new PIXI.Text(player.name, {
-                    fill: '#ffffff',
-                    fontSize: Math.min(20, player.radius),
-                    align: 'center',
-                    stroke: '#000000',
-                    strokeThickness: 1,
-                    resolution: 1
-                });
-                nameText.anchor.set(0.5);
-
-                this.playerGraphics.addChild(circle);
-                this.playerGraphics.addChild(nameText);
-                this.playerMap.set(player.id, { circle, nameText });
-                entry = { circle, nameText };
-            } else {
-                entry.circle.clear();
-                entry.nameText.text = player.name; // au cas où le nom change
+                this.addPlayer(player);
+                return;
             }
-
-            entry.circle.beginFill(parseInt(player.color.substring(1), 16));
+            entry.circle.clear();
+            entry.circle.beginFill(player.color);
             entry.circle.drawCircle(0, 0, player.radius);
             entry.circle.endFill();
-            entry.circle.position.set(player.position.x, player.position.y);
-
+             entry.circle.position.set(player.position.x, player.position.y);
             entry.nameText.position.set(
                 player.position.x,
                 player.position.y + player.radius + 10
             );
             entry.nameText.style.fontSize = Math.min(20, player.radius);
         });
-
-        // Supprimer les joueurs absents
-        for (const [id, { circle, nameText }] of this.playerMap.entries()) {
-            if (!remainingIds.has(id)) {
-                circle.destroy();
-                nameText.destroy();
-                this.playerMap.delete(id);
-            }
-        }
     }
-    /*
-    renderFoods(foods) {
-        const remainingIds = new Set();
-
-        foods.forEach((food, id) => {
-            remainingIds.add(id);
-
-            let circle = this.foodMap.get(id);
-            if (!circle) {
-                circle = new PIXI.Graphics();
-                this.foodGraphics.addChild(circle);
-                this.foodMap.set(id, circle);
-            } else {
-                circle.clear();
-            }
-            
-            circle.beginFill(parseInt(food.color.substring(1), 16));
-            circle.drawCircle(0, 0, food.radius);
-            circle.endFill();
-            circle.position.set(food.position.x, food.position.y);
-        });
-
-        // Supprimer les foods obsolètes
-        for (const [id, gfx] of this.foodMap.entries()) {
-            if (!remainingIds.has(id)) {
-                gfx.destroy();
-                this.foodMap.delete(id);
-            }
-        }
-    }
-    */
-    renderFoods(foods) {
-        const remainingIds = new Set();
-
-        foods.forEach((food, id) => {
-            remainingIds.add(id);
-
-            let foodSprite = this.foodMap.get(id);
-            if (!foodSprite) {
-                // Only create the sprite once
-                foodSprite = new PIXI.Sprite(this.particleTexture);
-                this.foodGraphics.addChild(foodSprite);
-                this.foodMap.set(id, foodSprite);
-            }
-            // Update sprite position and tint
-            foodSprite.position.set(food.position.x, food.position.y);
-            foodSprite.tint = parseInt(food.color.substring(1), 16);
-        });
-
-        // Remove old sprites
-        for (const [id, sprite] of this.foodMap.entries()) {
-            if (!remainingIds.has(id)) {
-                this.foodGraphics.removeChild(sprite);
-                sprite.destroy();
-                this.foodMap.delete(id);
-            }
-        }
-        }
 
 }

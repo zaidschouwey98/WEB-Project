@@ -1,4 +1,4 @@
-import { DeleteFoodMessage, GameInitMessage, GameUpdateMessage, MessageCodec, NewFoodMessage } from "../public/Message.js";
+import { DeleteFoodMessage, GameInitMessage, GameUpdateMessage, MessageCodec, NewFoodMessage, QuitPlayerMessage } from "../public/Message.js";
 import { GameEngine } from "./GameEngine.js";
 
 export class SocketManager{
@@ -17,6 +17,9 @@ export class SocketManager{
             });
 
             socket.on('disconnect', () => {
+                this.io.emit('message', MessageCodec.encode(
+                    new QuitPlayerMessage(socket.id)
+                ));
                 this.gameEngine.removePlayer(socket.id);
                 console.log(`Deconnexion: ${socket.id}`);
             });
@@ -39,6 +42,12 @@ export class SocketManager{
                 this.gameEngine.updatePlayerDirection(socket.id, message.getDirection());
                 break;
         }
+    }
+
+    broadcastDiedPlayer(id) {
+        this.io.emit('message', MessageCodec.encode(
+            new QuitPlayerMessage(id)
+        ));
     }
 
     broadcastGameState(state) {

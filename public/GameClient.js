@@ -8,7 +8,7 @@ export class GameClient {
         this.foods = new Map();
         this.initNetwork();
         this.app = app;
-        this.renderer = new Renderer(this.app,this.myPlayer,this);
+        this.renderer = new Renderer(this.app,this.myPlayer);
         this.gameStarted = false;
         this.initControls();
     }
@@ -17,7 +17,6 @@ export class GameClient {
         this.socket.onConnect(() => {
             // this.socket.sendJoinGame(prompt('Enter your name:') || 'No-name');
             this.socket.sendJoinGame("player1");
-
         });
 
         this.socket.onMessage('GameInitMessage', (message) => {
@@ -29,13 +28,25 @@ export class GameClient {
 
         this.socket.onMessage('NewFoodMessage',(message)=>{
             this.handleNewFood(message);
-        })
+        });
 
         this.socket.onMessage('DeleteFoodMessage',(message)=>{
             this.handleRemoveFood(message);
-        })
+        });
+
+        this.socket.onMessage('QuitPlayerMessage', (message) => {
+            this.handleQuitPlayer(message);
+        });
+            
     }
 
+    handleQuitPlayer(message) {
+        const playerId = message.data;
+        if (this.players.has(playerId)) {
+            this.renderer.deletePlayer(playerId);
+            this.players.delete(playerId);
+        }
+    }
     /**
      * 
      * @param {NewFoodMessage} message 
@@ -43,10 +54,12 @@ export class GameClient {
     handleNewFood(message){
         let food = message.data;
         this.foods.set(food.id,food);
+        this.renderer.addFood(food);
     }
     
     handleRemoveFood(message){
         this.foods.delete(message.data);
+        this.renderer.deleteFood(message.data);
     }
 
     handleGameInit(message) {
@@ -54,16 +67,13 @@ export class GameClient {
 
         for (let key of Object.keys(message.data.players)) {
             let playerData = message.data.players[key];
-            if (this.players.has(playerData.id)) {
-                this.players.get(playerData.id).update(playerData);
-            } else {
-                this.players.set(playerData.id, new Player(playerData.id,
-                    playerData.name,
-                    playerData.position,
-                    playerData.direction,
-                    playerData.color
-                ));
-            }
+            this.players.set(playerData.id, new Player(playerData.id,
+                playerData.name,
+                playerData.position,
+                playerData.direction,
+                playerData.color
+            ));
+            this.renderer.addPlayer(this.players.get(playerData.id));
         }
 
         this.myPlayer = this.players.get(message.getPlayerId());
@@ -71,7 +81,8 @@ export class GameClient {
         const foodsData = message.data.foods;
         for (let foodId in foodsData) {
             if (foodsData.hasOwnProperty(foodId)) {
-                this.foods.set(foodId, foodsData[foodId]);
+                this.foods.set(foodsData[foodId].id, foodsData[foodId]);  
+                this.renderer.addFood(foodsData[foodId]);
             }
         }
 
@@ -82,27 +93,25 @@ export class GameClient {
 
 
     handleGameUpdate(message) {
-        if (!this.gameStarted)
-            return;
+        if (!this.gameStarted) return;
         // Update players
         this.players.clear();
         for (let key of Object.keys(message.data.players)) {
             let playerData = message.data.players[key];
-            if (this.players.has(playerData.id)) {
-                this.players.get(playerData.id).update(playerData);
-            } else {
-                this.players.set(playerData.id, new Player(playerData.id,
-                    playerData.name,
-                    playerData.position,
-                    playerData.direction,
-                    playerData.color,
-                    playerData.score,
-                    playerData.radius,
-                    playerData.speed
-                ));
-            }
+            this.players.set(playerData.id, new Player(playerData.id,
+                playerData.name,
+                playerData.position,
+                playerData.direction,
+                playerData.color,
+                playerData.score,
+                playerData.radius,
+                playerData.speed
+            ));
         }
-        this.myPlayer = this.players.get(this.myPlayer.id);
+        if(this.players.has(this.myPlayer.id)) {
+            this.myPlayer = this.players.get(this.myPlayer.id);
+        }
+        this.renderer.update(this.players);
     }
     centerViewOnPlayer() {
         if(this.myPlayer != undefined)
@@ -132,7 +141,6 @@ export class GameClient {
                 this.socket.sendMove(mouseDirection);
             }
             this.centerViewOnPlayer();
-            this.renderer.update(this.players,this.foods);
         });
     }
 }
