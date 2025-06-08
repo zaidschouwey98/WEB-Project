@@ -35,7 +35,11 @@ export class Renderer {
 
     centerView(position) {
         this.camera.position.set(position.x, position.y);
-        this.camera.zoom = this.player ? 2 * Math.pow(10 / this.player.radius, 0.2) : 2;
+        const margin = 1.5;
+        const baseArea = 0.5;
+        const minViewportDimension = Math.min(window.innerWidth,window.innerHeight);
+        const requiredZoom = this.player ? baseArea + margin * this.player.radius * 2 / minViewportDimension : 1;
+        this.camera.zoom = 1 / requiredZoom;
     }
 
     updateView() {
@@ -129,12 +133,13 @@ export class Renderer {
             entry.circle.beginFill(player.color);
             entry.circle.drawCircle(0, 0, player.radius);
             entry.circle.endFill();
-             entry.circle.position.set(player.position.x, player.position.y);
+            entry.circle.position.set(player.position.x, player.position.y);
             entry.nameText.position.set(
                 player.position.x,
                 player.position.y
             );
-            entry.nameText.style.fontSize = Math.min(20, player.radius);
+
+            entry.nameText.style.fontSize = Math.max(20, player.radius/5);
         });
     }
 

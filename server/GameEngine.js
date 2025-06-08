@@ -51,7 +51,7 @@ export class GameEngine{
             if(foodDistance < player.radius - 2)
             {
                 // eat
-                player.eat(75);
+                player.eat(1000);
                 this.world.removeFood(food.id);
                 let newFood = this.world.spawnFood();
                 this.socketManager.addFood(newFood)
