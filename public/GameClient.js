@@ -96,8 +96,7 @@ export class GameClient {
         if (!this.gameStarted) return;
         // Update players
         this.players.clear();
-        for (let key of Object.keys(message.data.players)) {
-            let playerData = message.data.players[key];
+        for (let playerData of message.data.players){
             this.players.set(playerData.id, new Player(playerData.id,
                 playerData.name,
                 playerData.position,

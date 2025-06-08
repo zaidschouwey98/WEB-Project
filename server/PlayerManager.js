@@ -1,12 +1,13 @@
 import { Player } from "../public/Player.js";
+import { GameEngine } from "./GameEngine.js";
 
 export class PlayerManager {
   constructor() {
     this.players = new Map();
   }
 
-  addPlayer(id, name, position) {
-    const player = new Player(id, name,{x:0,y:0}, position, '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0'));
+  addPlayer(id, name) {
+    const player = new Player(id, name,this.generatePlayerPosition(), {x:0, y:0}, '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0'));
     this.players.set(id, player);
     return player;
   }
@@ -20,6 +21,13 @@ export class PlayerManager {
     if (player) {
       player.direction = direction;
     }
+  }
+
+  generatePlayerPosition() {
+    const x = Math.floor(Math.random() * GameEngine.WIDTH);
+    const y = Math.floor(Math.random() * GameEngine.HEIGHT);
+    console.log(`Generated position: (${x}, ${y})`);
+    return { x, y };
   }
 
   getClosestPlayer(playerId){

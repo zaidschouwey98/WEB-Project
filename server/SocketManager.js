@@ -52,7 +52,7 @@ export class SocketManager{
 
     broadcastGameState(state) {
         this.io.emit('message', MessageCodec.encode(
-            new GameUpdateMessage({players:Object.fromEntries(state.players)})
+            new GameUpdateMessage({players:state.players})
         ));
     }
     

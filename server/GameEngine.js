@@ -2,15 +2,20 @@ import { GameWorld } from "./GameWorld.js";
 import { PlayerManager } from "./PlayerManager.js";
 
 export class GameEngine{
+
+    static HEIGHT = 5000;
+    static WIDTH = 5000;
+    static MAX_FOOD = 10000;
+
     constructor(socketManager){
-        this.world = new GameWorld(5000, 5000,10000);
+        this.world = new GameWorld(GameEngine.WIDTH, GameEngine.HEIGHT, GameEngine.MAX_FOOD);
         this.playerManager = new PlayerManager();
         this.socketManager = socketManager;
         this.gameLoop();
     }
 
     addPlayer(id,name){
-        return this.playerManager.addPlayer(id,name,{x:0, y:0});
+        return this.playerManager.addPlayer(id,name);
     }
 
     removePlayer(id){
@@ -59,8 +64,7 @@ export class GameEngine{
 
     emitGameState() {
         const gameState = {
-            players: this.playerManager.getAllPlayers(),
-            foods: this.world.foods
+            players: Array.from(this.playerManager.players.values()),
         };
         this.socketManager.broadcastGameState(gameState);
     }
