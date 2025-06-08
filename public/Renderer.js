@@ -2,7 +2,6 @@ import { Vector2 } from "./Message.js";
 
 export class Renderer {
 
-
     constructor(app) {
         this.app = app;
         this.camera = {

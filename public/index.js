@@ -10,12 +10,13 @@ const app = new PIXI.Application();
     await setup();
     await preload();
     await initGame();
+    await createChart();
 })();
 
 async function setup()
 {
-    await app.init({ background: '#000000', resizeTo: window });
-    document.body.appendChild(app.view);
+    const canvas = document.getElementById('gameCanvas')
+    await app.init({view: canvas, background: '#000000', resizeTo: window });
 }
 
 async function preload() {
@@ -40,3 +41,49 @@ function resizeApp(app) {
   app.renderer.resolution = resolution;
   app.renderer.resize(width, height);
 }
+
+async function createChart() {
+    const ctx = document.getElementById('myChart');
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Live Data',
+          data: [],
+          borderColor: 'blue',
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: false,
+        maintainAspectRatio: false, // ⬅️ Allows full use of canvas size
+        animation: false,
+        scales: {
+          x: { title: { display: true, text: 'Time' }},
+          y: { title: { display: true, text: 'Value' }}
+        },
+        plugins: {
+        customCanvasBackgroundColor: {
+          color: 'transparent',
+        }
+      }
+      }
+    });
+
+    setInterval(() => {
+      const now = new Date().toLocaleTimeString();
+      const value = Math.random() * 100;
+
+      // Limit to last 20 points
+      if (chart.data.labels.length >= 20) {
+        chart.data.labels.shift();
+        chart.data.datasets[0].data.shift();
+      }
+
+      chart.data.labels.push(now);
+      chart.data.datasets[0].data.push(value);
+      chart.update();
+  }, 1000);
+}
+
