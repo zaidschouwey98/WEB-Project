@@ -3,8 +3,7 @@ import { Vector2 } from "./Message.js";
 export class Renderer {
 
 
-    constructor(app,player) {
-        this.player = player;
+    constructor(app) {
         this.app = app;
         this.camera = {
             position: new Vector2(0, 0),
@@ -31,10 +30,13 @@ export class Renderer {
         this.updateView();
     }
 
+    setCurrentPlayerId(playerId){
+        this.playerId = playerId;
+    }
+
     centerView(position) {
         this.camera.position.set(position.x, position.y);
-        this.camera.zoom = 2 // Adjust zoom based on player radius
-        this.updateView();
+        this.camera.zoom = this.player ? 2 * Math.pow(10 / this.player.radius, 0.2) : 2;
     }
 
     updateView() {
@@ -60,6 +62,7 @@ export class Renderer {
     update(players) {
         this.updatePlayers(players);
         this.updateView();
+        this.player = players.get(this.playerId);
     }
 
     addFood(food) {

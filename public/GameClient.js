@@ -8,7 +8,7 @@ export class GameClient {
         this.foods = new Map();
         this.initNetwork();
         this.app = app;
-        this.renderer = new Renderer(this.app,this.myPlayer);
+        this.renderer = new Renderer(this.app);
         this.gameStarted = false;
         this.initControls();
     }
@@ -77,6 +77,7 @@ export class GameClient {
         }
 
         this.myPlayer = this.players.get(message.getPlayerId());
+        this.renderer.setCurrentPlayerId(message.getPlayerId());
         // Initialize foods
         const foodsData = message.data.foods;
         for (let foodId in foodsData) {
