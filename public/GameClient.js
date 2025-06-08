@@ -2,7 +2,8 @@ import { Player } from "./Player.js";
 import { Renderer } from "./Renderer.js";
 
 export class GameClient {
-    constructor(socketManager, app) {
+    constructor(socketManager, app, username = "Player") {
+        this.username = username;
         this.socket = socketManager;
         this.players = new Map();
         this.foods = new Map();
@@ -15,8 +16,7 @@ export class GameClient {
 
     initNetwork() {
         this.socket.onConnect(() => {
-            // this.socket.sendJoinGame(prompt('Enter your name:') || 'No-name');
-            this.socket.sendJoinGame("player1");
+            this.socket.sendJoinGame(this.username);
         });
 
         this.socket.onMessage('GameInitMessage', (message) => {

@@ -4,14 +4,30 @@ import { SocketManager } from "./SocketManager.js";
 // Create a PixiJS application.
 const app = new PIXI.Application();
 
+
+const form = document.getElementById('pseudoForm');
+const formContainer = document.getElementById('formContainer');
+
+form.addEventListener('submit', (event) => {
+  event.preventDefault(); // Empêche le rechargement
+  const pseudo = document.getElementById('pseudoInput').value.trim();
+  console.log("Pseudo:", pseudo);
+  if (pseudo) {
+    formContainer.style.display = 'none'; // Cache le formulaire
+    document.getElementById('gameCanvas').style.visibility = 'visible';
+    document.getElementById('myChart').style.visibility = 'visible';
+    main(pseudo); // Appel de la fonction avec le pseudo
+  }
+});
+
 // Asynchronous IIFE
-(async () =>
+async function main(pseudo)
 {
     await setup();
     await preload();
-    await initGame();
+    await initGame(pseudo);
     await createChart();
-})();
+};
 
 async function setup()
 {
@@ -26,10 +42,10 @@ async function preload() {
 }
 
 
-async function initGame() {
+async function initGame(pseudo) {
   window.addEventListener('resize', () => resizeApp(app));
   let sm = new SocketManager();
-  const gameClient = new GameClient(sm,app);
+  const gameClient = new GameClient(sm,app,pseudo);
   app.ticker.start(); // Game loop
 }
 
@@ -57,7 +73,7 @@ async function createChart() {
       },
       options: {
         responsive: false,
-        maintainAspectRatio: false, // ⬅️ Allows full use of canvas size
+        maintainAspectRatio: false,
         animation: false,
         scales: {
           x: { title: { display: true, text: 'Time' }},

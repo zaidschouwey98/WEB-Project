@@ -93,7 +93,7 @@ export class Renderer {
         circle.position.set(player.position.x, player.position.y);
         nameText.position.set(
             player.position.x,
-            player.position.y + player.radius + 10
+            player.position.y
         );
         nameText.style.fontSize = Math.min(20, player.radius);
     }
@@ -132,7 +132,7 @@ export class Renderer {
              entry.circle.position.set(player.position.x, player.position.y);
             entry.nameText.position.set(
                 player.position.x,
-                player.position.y + player.radius + 10
+                player.position.y
             );
             entry.nameText.style.fontSize = Math.min(20, player.radius);
         });
