@@ -4,8 +4,8 @@ export class Food {
   static foodRadius = 5;
   static eatingGain = 75; // Mass gained from eating food
 
-  constructor(position) {
-    this.id = `food_${Food.nextFoodId++}`;
+  constructor(position, id = undefined) {
+    this.id = `food_${id ? id : Food.nextFoodId++}`;
     this.position = position;
     this.color = Food.getRandomColor();
     this.radius = this.foodRadius;

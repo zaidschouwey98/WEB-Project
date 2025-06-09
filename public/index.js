@@ -30,7 +30,7 @@ async function main(pseudo)
 async function setup()
 {
     const canvas = document.getElementById('gameCanvas')
-    await app.init({view: canvas, background: '#000000', resizeTo: window });
+    await app.init({view: canvas, background: '#FFFFFF', resizeTo: window });
 }
 
 async function initGame(pseudo,chart) {
