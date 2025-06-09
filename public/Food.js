@@ -2,13 +2,13 @@ export class Food {
 
   static nextFoodId = 1;
   static foodRadius = 5;
-  static eatingGain = 75; // Mass gained from eating food
+  static eatingGain = 75;
 
-  constructor(position, id = undefined) {
-    this.id = `food_${id ? id : Food.nextFoodId++}`;
+  constructor(position, color = Food.getRandomColor(), radius = this.foodRadius,id = undefined) {
+    this.id = id ? id :`food_${Food.nextFoodId++}`;
     this.position = position;
-    this.color = Food.getRandomColor();
-    this.radius = this.foodRadius;
+    this.color = color;
+    this.radius = radius;
   }
 
   static getRandomColor() {

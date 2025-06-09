@@ -1,3 +1,6 @@
+import { Food } from "./Food.js";
+import { Player } from "./Player.js";
+
 /**
  * Parent class for all messages used to communicate between server and client.
  */
@@ -72,11 +75,19 @@ export class GameInitMessage extends Message {
   }
 
   getPlayers() {
-    return this.data.players;
+    let players = [];
+    for(let player of this.data.players){
+      players.push(new Player(player.id,player.name,player.position,player.direction,player.color));
+    }
+    return players;
   }
 
   getFoods() {
-    return this.data.foods;
+    let foods = [];
+    for(let food of this.data.foods){
+      foods.push(new Food(food.position, food.color, food.radius, food.id));
+    }
+    return foods;
   }
 }
 
@@ -85,7 +96,11 @@ export class GameUpdateMessage extends Message {
     super({players});
   }
   getPlayers() {
-    return this.data.players;
+    let players = [];
+    for(let player of this.data.players){
+      players.push(new Player(player.id,player.name,player.position,player.direction,player.color));
+    }
+    return players;
   }
 }
 

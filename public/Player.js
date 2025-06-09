@@ -20,6 +20,7 @@ export class Player {
   }
 
   eat(otherMass){
+    this.score += otherMass/75;
     this.radius = Math.abs(Math.sqrt((this.getMass() + otherMass) / Math.PI));
   }
 
@@ -34,11 +35,7 @@ export class Player {
     this.score = playerData.score;
     this.speed = playerData.speed;
   }
-
-  getCenterPosition(){
-    return this.position;
-  }
-
+  
   getTotalMass() {
     return this.score;
   }

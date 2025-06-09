@@ -1,31 +1,42 @@
 import { Vector2 } from "./Message.js";
 
 export class Renderer {
+    #app;
+    #camera;
+    #particleTexture;
+    #worldContainer;
+    #playerGraphics;
+    #foodGraphics;
+    #foodMap;
+    #playerMap;
+    #worldSize;
+    #playerId;
+    #player;
 
     constructor(app) {
-        this.app = app;
-        this.camera = {
+        this.#app = app;
+        this.#camera = {
             position: new Vector2(0, 0),
             zoom: 1,
         };
 
-        this.particleTexture = this.createFoodTexture('#FFFFFF');
+        this.#particleTexture = this.createFoodTexture('#FFFFFF');
 
-        this.worldContainer = new PIXI.Container();
-        this.app.stage.addChild(this.worldContainer);
+        this.#worldContainer = new PIXI.Container();
+        this.#app.stage.addChild(this.#worldContainer);
 
-        this.playerGraphics = new PIXI.Container();
-        this.foodGraphics = new PIXI.Container();
+        this.#playerGraphics = new PIXI.Container();
+        this.#foodGraphics = new PIXI.Container();
 
-        this.worldContainer.addChild(this.foodGraphics);
-        this.worldContainer.addChild(this.playerGraphics);
+        this.#worldContainer.addChild(this.#foodGraphics);
+        this.#worldContainer.addChild(this.#playerGraphics);
 
-        this.foodMap = new Map();
-        this.playerMap = new Map();
+        this.#foodMap = new Map();
+        this.#playerMap = new Map();
     }
 
     initialize(worldSize) {
-        this.worldSize = worldSize;
+        this.#worldSize = worldSize;
         this.updateView();
         this.createGrid();
     }
@@ -33,53 +44,53 @@ export class Renderer {
 
     createGrid(){
         const gridContainer = new PIXI.Container();
-        this.worldContainer.addChild(gridContainer);
+        this.#worldContainer.addChild(gridContainer);
         
-        const gridSize = this.worldSize.width / 20; // Adjust grid size as needed
-        const gridColor = 0xCCCCCC; // Light gray color for the grid lines
+        const gridSize = this.#worldSize.width / 20;
+        const gridColor = 0xCCCCCC;
 
-        for (let x = 0; x <= this.worldSize.width; x += gridSize) {
+        for (let x = 0; x <= this.#worldSize.width; x += gridSize) {
             const line = new PIXI.Graphics();
             line.moveTo(x, 0);
-            line.lineTo(x, this.worldSize.height);
+            line.lineTo(x, this.#worldSize.height);
             line.stroke({ color: gridColor, pixelLine: true });
             gridContainer.addChild(line);
         }
 
-        for (let y = 0; y <= this.worldSize.height; y += gridSize) {
+        for (let y = 0; y <= this.#worldSize.height; y += gridSize) {
             const line = new PIXI.Graphics();
             line.lineStyle(1, gridColor, 0.5);
             line.moveTo(0, y);
-            line.lineTo(this.worldSize.width, y);
+            line.lineTo(this.#worldSize.width, y);
             line.stroke({ color: gridColor, pixelLine: true });
             gridContainer.addChild(line);
         }
-        this.worldContainer.setChildIndex(gridContainer, 0);
+        this.#worldContainer.setChildIndex(gridContainer, 0);
     }
         
 
     setCurrentPlayerId(playerId){
-        this.playerId = playerId;
+        this.#playerId = playerId;
     }
 
     centerView(position) {
-        this.camera.position.set(position.x, position.y);
+        this.#camera.position.set(position.x, position.y);
         const margin = 1.5;
         const baseArea = 0.5;
         const minViewportDimension = Math.min(window.innerWidth,window.innerHeight);
-        const requiredZoom = this.player ? baseArea + margin * this.player.radius * 2 / minViewportDimension : 1;
-        this.camera.zoom = 1 / requiredZoom;
+        const requiredZoom = this.#player ? baseArea + margin * this.#player.radius * 2 / minViewportDimension : 1;
+        this.#camera.zoom = 1 / requiredZoom;
     }
 
     updateView() {
         // Update container position and scale
-        this.worldContainer.x = this.app.screen.width / 2;
-        this.worldContainer.y = this.app.screen.height / 2;
+        this.#worldContainer.x = this.#app.screen.width / 2;
+        this.#worldContainer.y = this.#app.screen.height / 2;
 
-        this.worldContainer.scale.set(this.camera.zoom);
-        this.worldContainer.pivot.set(
-            this.camera.position.x,
-            this.camera.position.y
+        this.#worldContainer.scale.set(this.#camera.zoom);
+        this.#worldContainer.pivot.set(
+            this.#camera.position.x,
+            this.#camera.position.y
         );
     }
 
@@ -88,21 +99,21 @@ export class Renderer {
         gfx.beginFill(color);
         gfx.drawCircle(0, 0, 5);
         gfx.endFill();
-        return this.app.renderer.generateTexture(gfx);
+        return this.#app.renderer.generateTexture(gfx);
     }
 
     update(players) {
         this.updatePlayers(players);
         this.updateView();
-        this.player = players.get(this.playerId);
+        this.#player = players.get(this.playerId);
     }
 
     addFood(food) {
-        const foodSprite = new PIXI.Sprite(this.particleTexture);
+        const foodSprite = new PIXI.Sprite(this.#particleTexture);
         foodSprite.anchor.set(0.5);
         foodSprite.tint = food.color;
-        this.foodGraphics.addChild(foodSprite);
-        this.foodMap.set(food.id, foodSprite);
+        this.#foodGraphics.addChild(foodSprite);
+        this.#foodMap.set(food.id, foodSprite);
         foodSprite.position.set(food.position.x, food.position.y);
     }
 
@@ -117,9 +128,9 @@ export class Renderer {
             resolution: 1
         });
         nameText.anchor.set(0.5)
-        this.playerGraphics.addChild(circle);
-        this.playerGraphics.addChild(nameText);
-        this.playerMap.set(player.id, { circle, nameText });
+        this.#playerGraphics.addChild(circle);
+        this.#playerGraphics.addChild(nameText);
+        this.#playerMap.set(player.id, { circle, nameText });
         circle.beginFill(player.color);
         circle.drawCircle(0, 0, player.radius);
         circle.endFill();
@@ -132,28 +143,28 @@ export class Renderer {
     }
 
     deletePlayer(playerId) {
-        const entry = this.playerMap.get(playerId);
+        const entry = this.#playerMap.get(playerId);
         if (entry) {
-            this.playerGraphics.removeChild(entry.circle);
-            this.playerGraphics.removeChild(entry.nameText);
+            this.#playerGraphics.removeChild(entry.circle);
+            this.#playerGraphics.removeChild(entry.nameText);
             entry.circle.destroy(); 
             entry.nameText.destroy();
-            this.playerMap.delete(playerId);
+            this.#playerMap.delete(playerId);
         }
     }
 
     deleteFood(foodId) {
-        const sprite = this.foodMap.get(foodId);
+        const sprite = this.#foodMap.get(foodId);
         if (sprite) {
-            this.foodGraphics.removeChild(sprite);
+            this.#foodGraphics.removeChild(sprite);
             sprite.destroy();
-            this.foodMap.delete(foodId);
+            this.#foodMap.delete(foodId);
         }
     }
 
     updatePlayers(players) {
         players.forEach(player => {
-            const entry = this.playerMap.get(player.id);
+            const entry = this.#playerMap.get(player.id);
             if (!entry) {
                 this.addPlayer(player);
                 return;

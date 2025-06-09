@@ -1,4 +1,4 @@
-import { Food } from "./Food.js";
+import { Food } from "../public/Food.js";
 import { GameWorld } from "./GameWorld.js";
 import { PlayerManager } from "./PlayerManager.js";
 
@@ -45,33 +45,33 @@ export class GameEngine{
     gameLoop() {
         const TICK_RATE = 30;
         setInterval(() => {
-            this.playerManager.updatePositions(this.world);
+            this.#playerManager.updatePositions(this.world);
             this.handleCollisions();
             this.emitGameState();
         }, 1000 / TICK_RATE);
     }
 
     handleCollisions(){
-        this.playerManager.players.forEach((player)=>{
-            let {other, distance} = this.playerManager.getClosestPlayer(player.id);
+        this.#playerManager.players.forEach((player)=>{
+            let {other, distance} = this.#playerManager.getClosestPlayer(player.id);
            
             if(other != undefined && player.radius > other.radius + other.radius / 10)
                 if(distance < other.radius){
                     // Eat player
                     player.eat(other.getMass());
-                    this.playerManager.removePlayer(other.id);
-                    this.socketManager.broadcastDiedPlayer(other.id);
+                    this.#playerManager.removePlayer(other.id);
+                    this.#socketManager.broadcastDiedPlayer(other.id);
                 }
 
-            let {food,foodDistance} = this.world.getClosestFood(player);
+            let {food,foodDistance} = this.#world.getClosestFood(player);
             if(foodDistance < player.radius - 2)
             {
                 // Eat food
                 player.eat(Food.eatingGain);
-                this.world.removeFood(food.id);
-                let newFood = this.world.spawnFood();
-                this.socketManager.addFood(newFood)
-                this.socketManager.removeFood(food.id);
+                this.#world.removeFood(food.id);
+                let newFood = this.#world.spawnFood();
+                this.#socketManager.addFood(newFood)
+                this.#socketManager.removeFood(food.id);
             }
         })
     }
@@ -80,8 +80,8 @@ export class GameEngine{
 
     emitGameState() {
         const gameState = {
-            players: Array.from(this.playerManager.players.values()),
+            players: Array.from(this.#playerManager.players.values()),
         };
-        this.socketManager.broadcastGameState(gameState);
+        this.#socketManager.broadcastGameState(gameState);
     }
 }
