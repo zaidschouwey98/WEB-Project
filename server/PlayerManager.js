@@ -26,6 +26,14 @@ export class PlayerManager {
   generatePlayerPosition() {
     const x = Math.floor(Math.random() * GameEngine.WIDTH);
     const y = Math.floor(Math.random() * GameEngine.HEIGHT);
+    for(let player of this.players.values()){
+      let distanceX = player.position.x - x;
+      let distanceY = player.position.y - y;
+      let tmpdistance = Math.sqrt(Math.pow(distanceX,2) + Math.pow(distanceY,2));
+      if(tmpdistance < player.radius * 2){
+        return this.generatePlayerPosition();
+      }
+    }
     console.log(`Generated position: (${x}, ${y})`);
     return { x, y };
   }

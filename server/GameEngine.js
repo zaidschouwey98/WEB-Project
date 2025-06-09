@@ -1,3 +1,4 @@
+import { Food } from "./Food.js";
 import { GameWorld } from "./GameWorld.js";
 import { PlayerManager } from "./PlayerManager.js";
 
@@ -51,7 +52,7 @@ export class GameEngine{
             if(foodDistance < player.radius - 2)
             {
                 // eat
-                player.eat(1000);
+                player.eat(Food.eatingGain);
                 this.world.removeFood(food.id);
                 let newFood = this.world.spawnFood();
                 this.socketManager.addFood(newFood)

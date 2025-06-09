@@ -2,6 +2,7 @@ export class Food {
 
   static nextFoodId = 1;
   static foodRadius = 5;
+  static eatingGain = 75; // Mass gained from eating food
 
   constructor(position) {
     this.id = `food_${Food.nextFoodId++}`;

@@ -2,16 +2,36 @@ import { Player } from "./Player.js";
 import { Renderer } from "./Renderer.js";
 
 export class GameClient {
-    constructor(socketManager, app, username = "Player") {
+    constructor(socketManager, app, username = "Player",chart) {
         this.username = username;
         this.socket = socketManager;
         this.players = new Map();
         this.foods = new Map();
         this.initNetwork();
         this.app = app;
+        this.chart = chart;
         this.renderer = new Renderer(this.app);
         this.gameStarted = false;
         this.initControls();
+        this.initChartUpdate();
+    }
+
+    initChartUpdate() {
+        setInterval(() => {
+            const now = new Date().toLocaleTimeString();
+            if(this.myPlayer){
+                const value = this.myPlayer.radius;    
+                //Limit to last 40 points
+                if (this.chart.data.labels.length >= 20) {
+                  this.chart.data.labels.shift();
+                  this.chart.data.datasets[0].data.shift();
+                }
+            
+                this.chart.data.labels.push(now);
+                this.chart.data.datasets[0].data.push(value);
+                this.chart.update();
+            }
+        }, 5000);
     }
 
     initNetwork() {
@@ -64,9 +84,8 @@ export class GameClient {
 
     handleGameInit(message) {
         this.worldSize = message.getWorldSize();
-
-        for (let key of Object.keys(message.data.players)) {
-            let playerData = message.data.players[key];
+        console.log("World size:", this.worldSize);
+         for (let playerData of message.data.players){
             this.players.set(playerData.id, new Player(playerData.id,
                 playerData.name,
                 playerData.position,
@@ -80,11 +99,9 @@ export class GameClient {
         this.renderer.setCurrentPlayerId(message.getPlayerId());
         // Initialize foods
         const foodsData = message.data.foods;
-        for (let foodId in foodsData) {
-            if (foodsData.hasOwnProperty(foodId)) {
-                this.foods.set(foodsData[foodId].id, foodsData[foodId]);  
-                this.renderer.addFood(foodsData[foodId]);
-            }
+        for (let food of foodsData) {
+            this.foods.set(food.id, food);  
+            this.renderer.addFood(food);
         }
 
         this.renderer.initialize(this.worldSize);

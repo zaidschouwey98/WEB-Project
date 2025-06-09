@@ -27,7 +27,36 @@ export class Renderer {
     initialize(worldSize) {
         this.worldSize = worldSize;
         this.updateView();
+        this.createGrid();
     }
+
+
+    createGrid(){
+        const gridContainer = new PIXI.Container();
+        this.worldContainer.addChild(gridContainer);
+        
+        const gridSize = this.worldSize.width / 20; // Adjust grid size as needed
+        const gridColor = 0xCCCCCC; // Light gray color for the grid lines
+
+        for (let x = 0; x <= this.worldSize.width; x += gridSize) {
+            const line = new PIXI.Graphics();
+            line.moveTo(x, 0);
+            line.lineTo(x, this.worldSize.height);
+            line.stroke({ color: gridColor, pixelLine: true });
+            gridContainer.addChild(line);
+        }
+
+        for (let y = 0; y <= this.worldSize.height; y += gridSize) {
+            const line = new PIXI.Graphics();
+            line.lineStyle(1, gridColor, 0.5);
+            line.moveTo(0, y);
+            line.lineTo(this.worldSize.width, y);
+            line.stroke({ color: gridColor, pixelLine: true });
+            gridContainer.addChild(line);
+        }
+        this.worldContainer.setChildIndex(gridContainer, 0);
+    }
+        
 
     setCurrentPlayerId(playerId){
         this.playerId = playerId;
