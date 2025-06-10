@@ -105,7 +105,7 @@ export class Renderer {
     update(players) {
         this.updatePlayers(players);
         this.updateView();
-        this.#player = players.get(this.playerId);
+        this.#player = players.get(this.#playerId);
     }
 
     addFood(food) {

@@ -98,7 +98,7 @@ export class GameUpdateMessage extends Message {
   getPlayers() {
     let players = [];
     for(let player of this.data.players){
-      players.push(new Player(player.id,player.name,player.position,player.direction,player.color));
+      players.push(new Player(player.id,player.name,player.position,player.direction,player.color, player.score, player.radius, player.speed));
     }
     return players;
   }

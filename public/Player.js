@@ -1,14 +1,14 @@
 
 export class Player {
-  constructor(id,name,position, direction, color, score, radius, speed) {
+  constructor(id,name,position, direction, color, score = 10, radius = 10, speed = 2) {
     this.id = id;
     this.name = name;
     this.position = position;
     this.direction = direction;
     this.color = color;
-    this.score = score || 10;
-    this.speed = speed || 2;
-    this.radius = radius || 10;
+    this.score = score;
+    this.speed = speed;
+    this.radius = radius;
   }
 
   move(world){
