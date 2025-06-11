@@ -51,7 +51,7 @@ export class GameClient {
         setInterval(() => {
             const now = new Date().toLocaleTimeString();
             if(this.#playerId){
-                const value = this.#players.get(this.#playerId).radius;    
+                const value = this.#players.get(this.#playerId).score;    
                 //Limit to last 40 points
                 if (this.#chart.data.labels.length >= 20) {
                   this.#chart.data.labels.shift();

@@ -67,7 +67,7 @@ function createChart() {
         animation: false,
         scales: {
           x: { title: { display: true, text: 'Time' }},
-          y: { title: { display: true, text: 'Value' }}
+          y: { title: { display: true, text: 'Score' }}
         },
         plugins: {
         customCanvasBackgroundColor: {
